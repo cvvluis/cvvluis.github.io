@@ -1441,3 +1441,28 @@ code {
   aspect-ratio: 16 / 10;
   object-position: center;
 }
+
+.home-page #project-villagers-repurposed .project-image {
+  position: relative;
+}
+
+.home-page #project-villagers-repurposed .villagers-logo-badge {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  display: block;
+  width: clamp(80px, 13vw, 136px);
+  padding: 6px;
+  border: 1px solid rgb(242 241 235 / 24%);
+  border-radius: 5px;
+  background: rgb(23 24 23 / 82%);
+  box-shadow: 0 4px 18px rgb(0 0 0 / 45%);
+}
+
+.home-page #project-villagers-repurposed .villagers-logo-badge img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: contain;
+  background: transparent;
+}
