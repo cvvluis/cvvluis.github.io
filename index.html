@@ -284,6 +284,35 @@
     </div>
   
     <script src="graphdata.js?v=20261111-art"></script>
-    <script src="dorftafel.js?v=20261106d" defer></script>
+    <script>
+/* Villagers-Punkte kommen live von der Villagers-Seite (dort ist der Code-Audit aktuell).
+   Die Datei wird nur als Text gelesen, die Listen werden als JSON ausgewertet, nie ausgeführt.
+   Fällt sie aus, bleiben die Daten aus graphdata.js. */
+(function () {
+  var SOURCE = 'https://cvvluis.github.io/Villager-Repurposed/graphdata.js';
+  function take(text, name, open, close) {
+    var re = new RegExp('var ' + name + '=(\\' + open + '[\\s\\S]*?\\' + close + ');\\s*(?:\\n|var |window)');
+    var m = re.exec(text);
+    if (!m) return null;
+    return JSON.parse(m[1].replace(/([{,]\s*)([A-Z]\d{2,3})\s*:/g, '$1"$2":'));
+  }
+  window.DT_READY = Promise.race([
+    fetch(SOURCE, { cache: 'no-cache' }).then(function (r) { return r.ok ? r.text() : null; }),
+    new Promise(function (res) { setTimeout(function () { res(null); }, 4000); })
+  ]).then(function (text) {
+    if (!text || !window.DT_PAGE || !window.DT_PAGE.ring) return;
+    var F = take(text, 'F', '[', ']');
+    if (!Array.isArray(F) || !F.length) return;
+    var GAP = take(text, 'GAP', '{', '}') || {};
+    var R = window.DT_PAGE.ring;
+    R.F = R.F.filter(function (f) { return String(f[0]).charAt(0) !== 'V'; })
+      .concat(F.map(function (f) { return ['V.' + f[0], f[1], f[2], f[3]]; }));
+    R.GAP = R.GAP || {};
+    Object.keys(R.GAP).forEach(function (k) { if (k.charAt(0) === 'V') delete R.GAP[k]; });
+    Object.keys(GAP).forEach(function (k) { R.GAP['V.' + k] = GAP[k]; });
+    R.note = 'Bei Villagers: Repurposed stammen Status und Verbindungen live von der Villagers-Seite (Code-Prüfung). Die anderen Projekte stammen aus den Funktionslisten ihrer Seiten.';
+  }).catch(function () {});
+})();
+</script><script src="dorftafel.js?v=20261112a" defer></script>
 </body>
 </html>

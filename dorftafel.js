@@ -562,5 +562,7 @@
     }
     animate();
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+  // Zeichnen erst, wenn die Live-Daten der Villagers-Seite da sind (oder das Zeitlimit abgelaufen ist)
+  var go = function () { Promise.resolve(window.DT_READY).then(init, init); };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go); else go();
 })();
